@@ -1,0 +1,119 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" controller="ApexMainController">
+    <aura:attribute name="sensorList" type="Sensor__c[]" />
+    <aura:attribute name="tempArr" type="String[]" />
+    <aura:attribute name="currentPage" type="Integer" default="0" />
+    <aura:attribute name="totalPages" type="Integer" default="0" />
+    <aura:attribute name="selectedCheckbox" type="Integer" default="0" />
+
+    <!--PAGE HEADER-->
+    <div class="slds-page-header" role="banner">
+        <div class="slds-grid">
+            <div class="slds-grid slds-col slds-size_2-of-6">
+                <div class="media slds-float-left">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-utility-announcement slds-current-color" title="Description of icon when needed">
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-page-header__title slds-truncate slds-align-middle">Parking App</p>
+                    </div>
+                    <p class="slds-m-left_small">
+                        <ui:inputSelect aura:id="InputSelectSingle" label="Records Per Page: " change="{!c.onSingleSelectChange}">
+                            <ui:inputSelectOption text="5" />
+                            <ui:inputSelectOption text="10" />
+                            <ui:inputSelectOption text="25" />
+                            <ui:inputSelectOption text="50" />
+                            <ui:inputSelectOption text="100" />
+                        </ui:inputSelect>
+                    </p>
+                </div>
+            </div>
+
+            <div class="slds-grid slds-col slds-size_2-of-6">
+                <div class="slds-align_absolute-center">
+                    <ul class="slds-m-top_medium">
+                        <p>
+                            <li>
+                                <lightning:button aura:id="First" label="First" onclick="{!c.setPageNumber}" class="slds-button slds-button_brand"
+                                    disabled="true" />
+                                <lightning:button aura:id="Previous" label="Previous" onclick="{!c.setPageNumber}"
+                                    class="slds-button slds-button_brand" disabled="true" />
+                                <lightning:button aura:id="Next" label="Next" onclick="{!c.setPageNumber}" class="slds-button slds-button_brand"
+                                    disabled="true" />
+                                <lightning:button aura:id="Last" label="Last" onclick="{!c.setPageNumber}" class="slds-button slds-button_brand"
+                                    disabled="true" />
+
+                            </li>
+                        </p>
+                        <p>
+                            <li>
+                                <div class="slds-m-top_xx-small slds-align_absolute-center">Sensor Records * page
+                                    {!v.currentPage}/{!v.totalPages}</div>
+                            </li>
+                        </p>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="slds-grid slds-col slds-size_2-of-6">
+
+                <p class="slds-align_absolute-center">
+                    <div class="slds-m-right_medium">
+                        <lightning:icon iconName="doctype:csv">
+                        </lightning:icon>
+                    </div>
+                    <lightning:input aura:id="fileId" type="file" onchange="{!c.UploadFile}" accept=".csv" name="file"
+                        multiple="false" />
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!--PAGE BODY-->
+    <div class="slds-p-vertical_medium slds-p-horizontal_x-small">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr>
+                    <th class="slds-text-title_caps">
+                        <div class="slds-truncate">Base Station</div>
+                    </th>
+                    <th class="slds-text-title_caps">
+                        <div class="slds-truncate">Sensor Id</div>
+                    </th>
+                    <th class="slds-text-title_caps">
+                        <div class="slds-truncate">Sensor Type</div>
+                    </th>
+                    <th class="slds-text-title_caps">
+                        <div class="slds-truncate">Sensor Status</div>
+                    </th>
+                    <th class="slds-text-title_caps">
+                        <div class="slds-truncate">
+                            <aura:if isTrue="{!v.selectedCheckbox > 0}">
+                                <lightning:button label="Delete" onclick="{!c.deleteRecords}" class="slds-button slds-button_destructive" />
+                                <aura:set attribute="else">
+                                    <lightning:button label="Delete" onclick="{!c.deleteRecords}" class="slds-button slds-button_destructive"
+                                        disabled="true" />
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.sensorList}" var="sensorItem">
+                    <tr class="slds-hint-parent">
+                        <td>{!sensorItem.Base_Relationship__r.Name}</td>
+                        <td role="gridcell" class="slds-cell-wrap">{!sensorItem.Name}</td>
+                        <td>{!sensorItem.Type__c}</td>
+                        <td>{!sensorItem.Status__c}</td>
+                        <td>
+                            <ui:inputCheckbox text="{!sensorItem.Id}" aura:id="checkID" value="" change="{!c.selectCheckbox}"></ui:inputCheckbox>
+                        </td>
+                    </tr>
+                </aura:iteration>
+
+            </tbody>
+        </table>
+    </div>
+</aura:component>
