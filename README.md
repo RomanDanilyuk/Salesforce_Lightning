@@ -1,14 +1,2 @@
 # SFDX  App
-
-## Dev, Build and Test
-
-
-## Resources
-
-
-## Description of Files and Directories
-
-
-## Issues
-
-
+This App can read data from .csv file,parse into two related object and insert to force.com platform.
